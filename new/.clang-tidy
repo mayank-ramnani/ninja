@@ -1,0 +1,14 @@
+Checks: 'modernize-*,
+         readability-*,
+         cppcoreguidelines-*,
+         performance-*,
+         -fuchsia-*,
+         -google-*,
+         -zircon-*,
+         -abseil-*,
+         -llvm-*,
+         -llvmlibc-*'
+WarningsAsErrors: 'modernize-use-nullptr,readability-identifier-naming'
+HeaderFilterRegex: '.*'
+FormatStyle: file
+SystemHeaders: false
