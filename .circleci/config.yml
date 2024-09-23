@@ -16,11 +16,14 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y cmake g++ clang-tidy
       - run:
+          name: Copy clang-tidy config
+          command: |
+            cp .clang-tidy ~/.clang-tidy
+      - run:
           name: Run clang-tidy, build ninja and run ctest
           command: |
               mkdir build
               cd build
-              cp ../.clang-tidy ~/.clang-tidy
               cmake ..
               cmake --build .
               make
