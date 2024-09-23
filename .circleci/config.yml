@@ -20,6 +20,7 @@ jobs:
           command: |
               mkdir build
               cd build
+              cp ../.clang-tidy ~/.clang-tidy
               cmake ..
               cmake --build .
               make
