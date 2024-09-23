@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Copy clang-tidy config
           command: |
-            cp .clang-tidy ~/.clang-tidy
+            cp .clang-tidy /tmp/.clang-tidy
       - run:
           name: Run clang-tidy, build ninja and run ctest
           command: |
