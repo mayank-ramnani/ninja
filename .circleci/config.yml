@@ -5,22 +5,23 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  test:
+  ninja:
     docker:
       - image: cimg/base:current
     steps:
-      - checkout 
+      - checkout
       - run:
           name: Install ctest and compiler
           command: |
             sudo apt-get update
             sudo apt-get install -y cmake g++
       - run:
-          name: Run ctest
+          name: Run clang-tidy, build ninja and run ctest
           command: |
               mkdir build
               cd build
               cmake ..
+              cmake --build .
               make
               ctest
 
@@ -31,4 +32,4 @@ workflows:
   build-and-test: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - test
+      - ninja
