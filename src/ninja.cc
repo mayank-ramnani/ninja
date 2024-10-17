@@ -21,6 +21,10 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include <iostream>
+#include <sstream>
+
+
 #ifdef _WIN32
 #include "getopt.h"
 #include <direct.h>
@@ -1539,6 +1543,8 @@ int ReadFlags(int* argc, char*** argv,
   return -1;
 }
 
+std::stringstream ss;
+
 NORETURN void real_main(int argc, char** argv) {
   // Use exit() instead of return in this function to avoid potentially
   // expensive cleanup when destructing NinjaMain.
@@ -1575,6 +1581,11 @@ NORETURN void real_main(int argc, char** argv) {
     exit((ninja.*options.tool->func)(&options, argc, argv));
   }
 
+  // add preamble
+  ss << "#include \"manifest.h\"\n\n";
+  ss << "using namespace shadowdash;\n\n";
+  ss << "void manifest() {\n"; // start manifest() function
+  ss << "\n{"; // 
   // Limit number of rebuilds, to prevent infinite loops.
   const int kCycleLimit = 100;
   for (int cycle = 1; cycle <= kCycleLimit; ++cycle) {
@@ -1590,7 +1601,15 @@ NORETURN void real_main(int argc, char** argv) {
       status->Error("%s", err.c_str());
       exit(1);
     }
+}
+    ss << "\n}"; // exit manifest() function
+    std::string result = ss.str();
+    printf("Finished parsing:\n");
+    std::cout << result << std::endl; // write to stdout for now, change it to write to file later
+    exit(0); // exit(1) was suggested above by ninja to exit out; crashes otherwise
+}
 
+/* don't need anything other than parsing
     if (options.tool && options.tool->when == Tool::RUN_AFTER_LOAD)
       exit((ninja.*options.tool->func)(&options, argc, argv));
 
@@ -1628,6 +1647,7 @@ NORETURN void real_main(int argc, char** argv) {
       options.input_file, kCycleLimit);
   exit(1);
 }
+*/
 
 }  // anonymous namespace
 
