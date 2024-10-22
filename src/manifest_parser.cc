@@ -131,7 +131,6 @@ bool ManifestParser::ParsePool(string* err) {
   return true;
 }
 
-
 bool ManifestParser::ParseRule(string* err) {
   string name;
   if (!lexer_.ReadIdent(&name))
@@ -170,6 +169,11 @@ bool ManifestParser::ParseRule(string* err) {
     return lexer_.Error("expected 'command =' line", err);
 
   env_->AddRule(rule);
+    // add rule here to the stringstream
+    g_output_ss << "rule" + rule->name_ + "\n  command = ";
+
+    g_output_ss << rule->bindings_.at("command").Unparse();
+
   return true;
 }
 
