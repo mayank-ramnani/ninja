@@ -1541,8 +1541,6 @@ int ReadFlags(int* argc, char*** argv,
   return -1;
 }
 
-std::stringstream g_output_ss;
-
 NORETURN void real_main(int argc, char** argv) {
   // Use exit() instead of return in this function to avoid potentially
   // expensive cleanup when destructing NinjaMain.
