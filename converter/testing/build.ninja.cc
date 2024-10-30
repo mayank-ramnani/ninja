@@ -30,4 +30,6 @@ void manifest() {
         {},                        //
         {}                         //
   );
+
+  default(str("hello"));
 }
