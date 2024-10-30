@@ -54,6 +54,9 @@
 #include "util.h"
 #include "version.h"
 
+// mr:
+#include <fstream>
+
 using namespace std;
 
 #ifdef _WIN32
@@ -1603,9 +1606,21 @@ NORETURN void real_main(int argc, char** argv) {
     }
     
     g_output_ss << "\n}"; // exit manifest() function
+   
     std::string result = g_output_ss.str();
-    printf("Finished parsing:\n");
     std::cout << result << std::endl; // write to stdout for now, change it to write to file later
+    
+    // write to file
+    std::ofstream outFile("output.cc");
+
+    // Check if the file opened successfully
+    if (outFile.is_open()) {
+        outFile << result;
+        outFile.close();
+    } else {
+        std::cerr << "Error opening file for writing.\n";
+    }
+
     exit(0); // exit(1) was suggested above by ninja to exit out; crashes otherwise
 }
 
