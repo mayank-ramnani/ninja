@@ -212,6 +212,12 @@ bool ManifestParser::ParseRule(string* err) {
     return lexer_.Error("expected 'command =' line", err);
 
   env_->AddRule(rule);
+    
+    g_output_ss << "\nrule(\n";
+    g_output_ss << "\t" << rule->name_ << ",\n";
+    g_output_ss << "bind(command, {";
+    // start at g++
+
     // add rule here to the stringstream
 	g_output_ss << "\nauto " << rule->name_ << " = rule{ {\n"
 		<< "    ";
