@@ -212,12 +212,8 @@ bool ManifestParser::ParseRule(string* err) {
     return lexer_.Error("expected 'command =' line", err);
 
   env_->AddRule(rule);
-    
-    g_output_ss << "\nrule(\n";
-    g_output_ss << "\t" << rule->name_ << ",\n";
-    g_output_ss << "bind(command, {";
-    // start at g++
-
+  
+#if OUTPUT_TEAM2
     // add rule here to the stringstream
 	g_output_ss << "\nauto " << rule->name_ << " = rule{ {\n"
 		<< "    ";
@@ -232,6 +228,23 @@ bool ManifestParser::ParseRule(string* err) {
         }
     }
 	g_output_ss << ")\n" << "} };\n";
+
+#else
+    g_output_ss << "\n\trule(\n";
+    g_output_ss << "\t\t" << rule->name_ << ",\n";
+    g_output_ss << "\t\tbind(command, {";
+
+	std::vector<std::string> tokens = split_by_spaces(rule->bindings_.at("command").Unparse());
+
+    for (size_t i=0; i < tokens.size(); ++i) {
+        g_output_ss << extract_token(tokens[i]);
+        if (i != tokens.size() - 1) {
+            g_output_ss << ",";
+        }
+    }
+	g_output_ss << "})\n";
+	g_output_ss << "\t);\n";
+#endif
 
   return true;
 }
@@ -484,6 +497,7 @@ bool ManifestParser::ParseEdge(string* err) {
     assert(!edge->dyndep_->generated_by_dep_loader());
   }
     
+#ifdef OUTPUT_TEAM2
     // add edge here to the stringstream
 	g_output_ss << "\nbuild(";
     
@@ -507,7 +521,30 @@ bool ManifestParser::ParseEdge(string* err) {
     }
     
     g_output_ss << ");\n";
+#else
+    // add edge here to the stringstream
+	g_output_ss << "\n\tauto buildvar = ";
+	g_output_ss << "build(";
+    
+    g_output_ss << "list( str( ";
+    g_output_ss << "\"" << outs[0].Evaluate(env) << "\""; // todo: make this a loop
+    g_output_ss << ")),\n";
+    
+    g_output_ss << "\t\tlist(),\n";
+ 
+    g_output_ss << "\t\t" << rule->name_ << ",\n";
+    
+    g_output_ss << "\tlist(str(\"" << ins[0].Evaluate(env) << "\")),\n"; // todo: make this a loop
+    g_output_ss << "\t\tlist(),\n";
+    g_output_ss << "\t\tlist(),\n";
 
+    for (const auto& pair : savedBindings) {
+        g_output_ss << "\t\t{ bind(" << pair.first << ", \"" << pair.second << "\") }\n";
+    }
+    
+    g_output_ss << "\t);\n";
+
+#endif
   return true;
 }
 
