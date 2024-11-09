@@ -30,7 +30,7 @@ jobs:
           name: Run tests
           command: |
               cd build
-              ctest --output-junit results.xml --output-on-failure
+              ctest --output-junit results.xml
       - store_test_results:
               path: build
 
