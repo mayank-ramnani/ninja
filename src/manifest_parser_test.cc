@@ -52,7 +52,7 @@ TEST_F(ParserTest, Rules) {
 
   ASSERT_EQ(3u, state.bindings_.GetRules().size());
   const Rule* rule = state.bindings_.GetRules().begin()->second;
-  EXPECT_EQ("cat", rule->name());
+  EXPECT_EQ("bat", rule->name());
   EXPECT_EQ("[cat ][$in][ > ][$out]",
             rule->GetBinding("command")->Serialize());
 }
